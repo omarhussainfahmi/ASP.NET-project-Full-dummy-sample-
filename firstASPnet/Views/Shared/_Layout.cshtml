@@ -1,0 +1,44 @@
+﻿@{
+    Layout = "~/Views/Shared/_MasterLayout.cshtml";
+}
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Asp.Net app</title>
+    <link href="~/StyleSheet.css" rel="stylesheet" /> 
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.3.0/css/all.min.css"
+    integrity="sha512-ApSLB1Pd3/bZN8fWB/RG9YhN/7bd9Hkf3AGaE2mPfebjrxagjuBtx2GcgdqIlJkUzwylBo61r9Xa9NmgBI0swA=="
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
+</head>
+<body>
+    <div class="container">
+        <div class="navbar">
+            <div class="navbar-brand">AspNet App
+            </div>
+            <url> <li><a href="/">Home </a> </li> 
+                <li><a href="/company">About </a> </li>
+                <li><a href="/contact">Contact </a> </li>
+                <li><a href="/products">all products </a> </li>
+                <li><a href="/Search"> Search products </a> </li>
+                <li><a href="/Order"> Order Product </a> </li>
+            </url>
+        </div>
+        @{
+            int x;
+            x = 10;
+
+        }
+        <div class="page-content"> 
+            @RenderBody()
+        </div>
+    </div>
+    <div> class= "footer-content"</div>
+    @RenderSection("footer_section", false)
+
+        
+    </div>
+    @RenderSection("scripts", required: false)
+</body>
+</html>
