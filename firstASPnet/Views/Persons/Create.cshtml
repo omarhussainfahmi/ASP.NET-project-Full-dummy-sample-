@@ -1,0 +1,34 @@
+﻿@{
+	ViewBag.Title = "Create Person";
+
+}
+
+<a asp-controller= "Persons" asp-action="Index" href="~/persons/index" class="link-hover" >Back to Persons List</a>
+<h2>Create Person</h2>
+
+<div class="w-50">
+	<form  asp-controller="~/persons/create" asp-action method="post">
+		<div class="form-field flex">
+			<div class="w-25">
+				<label for="PerosnName" class="form-label pt">Person Name</label>
+				<label></label>
+			</div>
+			<div class="flex-1">
+				<input type="text" id="PersonName" name="PersonName" class="form-input"/>
+			</div>
+		</div>
+	</form>
+</div>
+
+@section scripts
+{
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/4.0.0/jquery.min.js" 
+integrity="sha512-8LENNbXmzI/Gbj+OwXmqR6V4QaUAw0/porPzy1+dQoJqC0JPHedWoe0DDOTL2uHA5XXJyIsPtiMHH86pVlay6A=="
+crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.22.1/jquery.validate.min.js"
+integrity="sha512-qu7dMuIm2f0KcKZ3BOoP4c+Hn+r4E8PbD2Ro4rmKsOyheCxcwhzQpf6SojA76dn+owqfANzfTFUTkGA+HpHjOA==" 
+crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validation-unobtrusive/4.0.0/jquery.validate.unobtrusive.min.js"
+integrity="sha512-xq+Vm8jC94ynOikewaQXMEkJIOBp7iArs3IhFWSWdRT3Pq8wFz46p+ZDFAR7kHnSFf+zUv52B3prRYnbDRdgog==" crossorigin="anonymous"
+referrerpolicy="no-referrer"></script>
+}
