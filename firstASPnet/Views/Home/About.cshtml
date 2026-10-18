@@ -1,10 +1,6 @@
-﻿@{
-	Layout = "~/Views/Shared/_Layout.cshtml";
-	ViewData["Title"] = "About";
-}
-<h1>About</h1>
-<p>About company</p>
-<partial name = "_ListPartialView"/>
-
-@await Component.InvokeAsync("Grid")
-<vc:grid></vc:grid>
+@{ ViewData["Title"] = "About the project"; ViewData["Description"] = "Learn what the firstASPnet sample demonstrates, how its C# layers are organized, and which exercises remain unfinished."; }
+<h1>About this project</h1>
+<p class="lead">firstASPnet is a personal ASP.NET Core MVC learning project maintained by <a href="https://github.com/omarhussainfahmi" rel="noopener noreferrer">omarhussainfahmi</a>.</p>
+<h2>What you can explore</h2><p>The public pages demonstrate Razor layouts, accessible navigation, page metadata, error handling, and form validation. The source also contains exercises for entities, service contracts, repositories, JWT generation, and custom filters.</p>
+<h2>Project status</h2><p>This is a learning sample. The original person-management, product, export, and database exercises are incomplete and are not available through the public site. A production application needs completed authorization, persistence, and business logic before enabling those features.</p>
+<p><a href="https://github.com/omarhussainfahmi/ASP.NET-project-Full-dummy-sample-" rel="noopener noreferrer">Read the source on GitHub</a></p>

@@ -1,0 +1,14 @@
+@model DemoRequest
+@{ ViewData["Title"] = "Try form validation"; ViewData["Description"] = "Try accessible server-side validation using fictional project details. This demonstration does not save your input."; ViewData["NoIndex"] = true; }
+<h1>Try form validation</h1>
+<p>Enter fictional project details. This demonstration validates input; it does not save records or send messages. Do not enter personal information.</p>
+<form asp-controller="Home" asp-action="Demo" method="post">
+    <div asp-validation-summary="All" class="validation" role="alert"></div>
+    <label asp-for="ProjectName"></label>
+    <input asp-for="ProjectName" maxlength="80" required aria-describedby="name-error" autocomplete="off" />
+    <span asp-validation-for="ProjectName" id="name-error" class="validation"></span>
+    <label asp-for="RecordCount"></label>
+    <input asp-for="RecordCount" type="number" min="1" max="100" required aria-describedby="count-error" />
+    <span asp-validation-for="RecordCount" id="count-error" class="validation"></span>
+    <button type="submit">Validate sample</button>
+</form>

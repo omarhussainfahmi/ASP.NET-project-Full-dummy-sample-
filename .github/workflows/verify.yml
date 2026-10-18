@@ -1,0 +1,29 @@
+name: Build and security checks
+on:
+  push:
+  pull_request:
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: |
+            8.0.x
+            9.0.x
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: dotnet restore firstASPnet.sln
+      - run: dotnet build firstASPnet.sln --no-restore
+      - run: dotnet test firstASPnet.sln --no-build
+      - run: dotnet dev-certs https
+      - run: python tools/smoke_test.py
+      - name: Check known vulnerable dependencies
+        run: |
+          dotnet list firstASPnet.sln package --vulnerable --include-transitive --format json > dependency-audit.json
+          python tools/check_dependencies.py dependency-audit.json

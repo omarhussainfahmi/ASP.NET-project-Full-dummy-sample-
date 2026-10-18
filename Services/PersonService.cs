@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Entities;
 using ServiceContracts1.DTO;
 using ServiceContracts1;
@@ -21,6 +21,7 @@ namespace Services
         public PersonService(IPersonsRepository personsRepository, ILogger<PersonService> logger)
         {
             _personsRepository = personsRepository;
+            _logger = logger;
           
         }
 
@@ -97,17 +98,7 @@ namespace Services
 
 
         }
-        /* Faustina,fphilpault0@fastcompany.com,1997-12-03,Female,2780 Ridgeview Plaza,true
-Vanya,vcox1@uiuc.edu,1994-03-30,Genderqueer,44470 Kipling Center,true
-Neron,nbenge2@live.com,2010-11-11,Male,00002 Melby Plaza,false
-Bidget,bmayte3@zimbio.com,1996-02-02,Bigender,08910 Prairieview Parkway,true
-Corbet,cbaudino4@chron.com,2023-02-18,Male,84496 Bunting Crossing,true
-Joel,jbeaument5@diigo.com,2012-07-08,Male,341 Mesta Alley,false
-Emelina,egorger6@squarespace.com,1995-05-23,Genderqueer,72227 Melody Center,true
-Gabi,glesly7@gizmodo.com,2000-09-08,Female,41 Derek Place,false
-Walker,wstubley8@techcrunch.com,1999-06-02,Male,5094 Express Street,false
-Abraham,alafrentz9@mediafire.com,2021-12-17,Male,082 Redwing Junction,false
-        */
+
 
         //_countriesRepository.sp_InsertPerson(person);
     }
