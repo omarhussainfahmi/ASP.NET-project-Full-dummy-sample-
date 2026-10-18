@@ -50,7 +50,9 @@ For the **unfinished JWT exercise only**, configure `Jwt:Key` outside the reposi
 
 `.gitignore` excludes local environment files, local configuration overrides, secret files, private keys, logs, and build outputs. Ignoring a file does not remove earlier commits. A public-history review found illustrative secret placeholders and a hardcoded signing example. Gitleaks 8.30.1 reported no recognized secrets in the three original commits; the manual/pattern review identified no verified provider API credential. These checks cannot guarantee that every possible credential format has been detected.
 
-**If any committed value was ever used as a real credential, revoke or rotate it at its provider.** Deleting it from the latest source does not revoke it or remove historical copies. The former personal date and example signing value remain accessible in old commits until a coordinated history cleanup is performed. History was not force-rewritten as part of these fixes. See [GitHub's sensitive-data removal guidance](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/removing-sensitive-data-from-a-repository).
+**If any committed value was ever used as a real credential, revoke or rotate it at its provider.** Deleting it from source does not revoke it.
+
+On October 18, 2026, an owner-approved history rewrite removed the personal birth-date block, published signing example, illustrative secret values, and commented contact-record samples from the published branch histories. The current source trees were verified unchanged by the rewrite. Re-clone existing checkouts before contributing so old history is not accidentally reintroduced. GitHub pull-request references, cached commit pages, forks, or third-party clones can retain old copies; removing GitHub's retained references or caches requires GitHub Support. See [GitHub's sensitive-data removal guidance](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/removing-sensitive-data-from-a-repository).
 
 ## Website checklist implemented
 
