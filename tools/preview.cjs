@@ -18,12 +18,16 @@ const root = path.resolve(__dirname, '..');
     const errors = [];
     page.on('pageerror', error => errors.push(error.message));
     fs.mkdirSync(path.join(root,'artifacts'),{recursive:true});
-    for (const [name,width,height] of [['desktop',1440,1000],['mobile',390,844]]) {
+    for (const [name,width,height] of [['desktop',1440,1000],['mobile',390,844],['small-mobile',320,568],['tablet',768,1024]]) {
       await page.setViewportSize({width,height});
       for (const [slug,url] of [['home','/'],['about','/company'],['form','/demo'],['not-found','/missing']]) {
         await page.goto('https://localhost:17443'+url);
         if (await page.evaluate(()=>document.documentElement.scrollWidth > window.innerWidth)) throw new Error('Horizontal overflow: '+name+' '+url);
-        if (name==='mobile' && !(await page.locator('.mobile-contact').isVisible())) throw new Error('Mobile contact button hidden');
+        if (name.includes('mobile') && !(await page.locator('.mobile-contact').isVisible())) throw new Error('Mobile contact button hidden');
+        if (url==='/') {
+          const cta = await page.locator('main .button').boundingBox();
+          if (!cta || cta.y + cta.height > height) throw new Error('Primary action below the fold: '+name);
+        }
         await page.screenshot({path:path.join(root,'artifacts',name+'-'+slug+'.png'),fullPage:true});
       }
     }
