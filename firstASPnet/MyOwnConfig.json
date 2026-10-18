@@ -1,6 +1,1 @@
-{
-    "weatherapi": {
-        "ClientID": "ClientID from MyOwnConfig.json",
-        "ClientSecret": ""
-    }
-}
+{}

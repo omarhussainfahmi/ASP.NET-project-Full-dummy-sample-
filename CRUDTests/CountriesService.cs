@@ -7,8 +7,8 @@ namespace CRUDTests
 {
     public class CountriesService : ICountriesService
     {
-        private readonly List<CountryResponse> _countries;
-        private readonly ApplictaionDbContext _db;
+        private readonly List<CountryResponse> _countries = new();
+        private readonly ApplictaionDbContext? _db;
 
         public CountriesService()
         {
@@ -19,11 +19,6 @@ namespace CRUDTests
             _db = personsDbContext;
             _countries = new List<CountryResponse>
             {
-                new CountryResponse { countryID = Guid.NewGuid(), CountryName = "India" },
-                new CountryResponse { countryID = Guid.NewGuid(), CountryName = "USA" },
-                new CountryResponse { countryID = Guid.NewGuid(), CountryName = "UK" },
-                new CountryResponse { countryID = Guid.NewGuid(), CountryName = "Canada" },
-                new CountryResponse { countryID = Guid.NewGuid(), CountryName = "Australia" }
             };
         }
 
@@ -34,6 +29,7 @@ namespace CRUDTests
 
         public void AddCountry(CountryAddRequset? requset)
         {
+            ArgumentNullException.ThrowIfNull(requset);
             throw new NotImplementedException();
         }
 
@@ -54,7 +50,7 @@ namespace CRUDTests
 
         List<CountryResponse> ICountriesService.GetAllCountries()
         {
-            throw new NotImplementedException();
+            return GetAllCountries();
         }
     }
 }
