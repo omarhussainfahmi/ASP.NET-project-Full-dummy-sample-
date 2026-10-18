@@ -27,6 +27,10 @@ const root = path.resolve(__dirname, '..');
         if (url==='/') {
           const cta = await page.locator('main .button').boundingBox();
           if (!cta || cta.y + cta.height > height) throw new Error('Primary action below the fold: '+name);
+          if (name.includes('mobile')) {
+            const sticky = await page.locator('.mobile-contact').boundingBox();
+            if (sticky && cta.y + cta.height > sticky.y - 12) throw new Error('Sticky contact overlaps primary action: '+name);
+          }
         }
         await page.screenshot({path:path.join(root,'artifacts',name+'-'+slug+'.png'),fullPage:true});
       }
