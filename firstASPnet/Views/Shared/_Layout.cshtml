@@ -1,44 +1,41 @@
-﻿@{
-    Layout = "~/Views/Shared/_MasterLayout.cshtml";
+@using firstASPnet.Controllers
+@inject IConfiguration Config
+@{
+    Layout = null;
+    var title = (ViewData["Title"] as string ?? "ASP.NET Core MVC sample") + " | firstASPnet";
+    var description = ViewData["Description"] as string ?? "Explore a layered ASP.NET Core MVC learning project with Razor pages and a secure form validation demonstration.";
+    var publicUrl = HomeController.PublicUrl(Config);
 }
-<!DOCTYPE html>
-
-<html>
+<!doctype html>
+<html lang="en">
 <head>
-    <meta name="viewport" content="width=device-width" />
-    <title>Asp.Net app</title>
-    <link href="~/StyleSheet.css" rel="stylesheet" /> 
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.3.0/css/all.min.css"
-    integrity="sha512-ApSLB1Pd3/bZN8fWB/RG9YhN/7bd9Hkf3AGaE2mPfebjrxagjuBtx2GcgdqIlJkUzwylBo61r9Xa9NmgBI0swA=="
-    crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>@title</title>
+    <meta name="description" content="@description" />
+    @if (publicUrl is null || ViewData["NoIndex"] is true || Context.Response.StatusCode >= 400) { <meta name="robots" content="noindex, nofollow" /> }
+    <meta property="og:title" content="@title" />
+    <meta property="og:description" content="@description" />
+    <meta property="og:type" content="website" />
+    <meta name="twitter:card" content="summary_large_image" />
+    @if (publicUrl is not null) {
+        <meta property="og:image" content="@(publicUrl + "/social-preview.png")" />
+        <meta property="og:image:width" content="1200" />
+        <meta property="og:image:height" content="630" />
+        <meta property="og:url" content="@(publicUrl + Context.Request.Path)" />
+        <link rel="canonical" href="@(publicUrl + Context.Request.Path)" />
+    }
+    <meta property="og:image:alt" content="firstASPnet — ASP.NET Core MVC learning sample" />
+    <link rel="icon" href="~/favicon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="~/StyleSheet.css" asp-append-version="true" />
 </head>
 <body>
-    <div class="container">
-        <div class="navbar">
-            <div class="navbar-brand">AspNet App
-            </div>
-            <url> <li><a href="/">Home </a> </li> 
-                <li><a href="/company">About </a> </li>
-                <li><a href="/contact">Contact </a> </li>
-                <li><a href="/products">all products </a> </li>
-                <li><a href="/Search"> Search products </a> </li>
-                <li><a href="/Order"> Order Product </a> </li>
-            </url>
-        </div>
-        @{
-            int x;
-            x = 10;
-
-        }
-        <div class="page-content"> 
-            @RenderBody()
-        </div>
-    </div>
-    <div> class= "footer-content"</div>
-    @RenderSection("footer_section", false)
-
-        
-    </div>
-    @RenderSection("scripts", required: false)
+    <a class="skip" href="#main">Skip to content</a>
+    <header><nav aria-label="Main navigation"><a class="brand" href="/">firstASPnet</a><a href="/company">About</a><a href="/demo">Try the demo</a><a href="/contact">Contact</a></nav></header>
+    <main id="main" tabindex="-1">@RenderBody()</main>
+    <footer><p>ASP.NET Core MVC learning sample · <a href="/privacy">Privacy &amp; cookies</a></p><p>No advertising or analytics cookies are used.</p></footer>
+    <a class="mobile-contact" href="/contact">Contact the maintainer</a>
+    @await RenderSectionAsync("footer_section", required: false)
+    @await RenderSectionAsync("scripts", required: false)
 </body>
 </html>

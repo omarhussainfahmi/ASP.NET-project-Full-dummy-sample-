@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using Services;
 using ServiceContracts;
 using ServiceContracts1.DTO;
@@ -17,15 +17,16 @@ using firstASPnet.Filters;
 
 namespace firstASPnet.Controllers
 {
+    [NonController] // Incomplete learning exercises; never expose personal records publicly.
     public class PersonsController : Controller
     {
-     
+
         private readonly IPersonService _personService;
         private readonly ICountriesService _countriesService;
         private readonly object personResponse;
         private readonly ILogger<PersonsController> _logger;
-     
-       
+
+
         public PersonsController (IPersonService personService,
             ICountriesService countriesService
              , ILogger<PersonsController> logger
@@ -36,7 +37,7 @@ namespace firstASPnet.Controllers
             _logger = logger;
         }
         [Route ("persons/index")]
-        [Route ("/")]
+
         [TypeFilter(typeof(PersonsListActionFilter), Order =4)]
         [TypeFilter(typeof(ResponseHeaderActionFilter), Arguments = new object[] {"X-Custom-Key","Custom-Value", 1}, Order =1) ]
         [TypeFilter(typeof(PersonsListResultFilter))]
@@ -63,7 +64,7 @@ namespace firstASPnet.Controllers
             ViewBag.CurrentSearchBy = searchBy;
             ViewBag.CurrentSearchString = searchString;
 
-            
+
             return View(persons);
         }
         [HttpGet]
@@ -81,7 +82,8 @@ namespace firstASPnet.Controllers
             );
             return View();
         }
-        [HttpGet]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
         [Route("persons/create")]
         public IActionResult Create(ServiceContracts.PersonAddRequest personAddRequest)
         {
@@ -92,7 +94,7 @@ namespace firstASPnet.Controllers
                 ViewBag.Errors = ModelState.Values.SelectMany(ViewBag=> ViewBag.Errors).SelectMany(e => e.ErrorMessage).ToList();
                 return View();
             }
-            _personService.AddPerson(personAddRequest); 
+            _personService.AddPerson(personAddRequest);
             return RedirectToAction("Index","Persons");
 
         }

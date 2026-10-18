@@ -1,7 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
 
 namespace firstASPnet.controllers
 {
+    [NonController] // Incomplete learning exercises; never expose personal records publicly.
     public class ProductsController : Controller
     {
         [Route("products")]

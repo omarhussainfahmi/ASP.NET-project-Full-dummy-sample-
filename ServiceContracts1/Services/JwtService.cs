@@ -1,10 +1,10 @@
-﻿using System;
+using System;
 using System.Security.Claims;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using ServiceContracts1.DTO;
 using ServiceContracts1.ServiceContracts;
-using Microsoft.IdentityModel.Tokens;
+
 using System.Text;
 using System.IdentityModel.Tokens.Jwt;
 
@@ -20,9 +20,12 @@ namespace ServiceContracts1.Services
         }
         public AuthenticationResponse CreateJwtToken(ApplicationUser user)
         {
-           DateTime expiration = DateTime.UtcNow.AddMinutes(Convert.ToDouble(_configuration["Jwt:EXPIRATION_MINUTES"]));
+           var key = _configuration["Jwt:Key"];
+            if (string.IsNullOrWhiteSpace(key) || Encoding.UTF8.GetByteCount(key) < 32)
+                throw new InvalidOperationException("Configure a strong JWT signing key outside source control before using token generation.");
+            DateTime expiration = DateTime.UtcNow.AddMinutes(Convert.ToDouble(_configuration["Jwt:EXPIRATION_MINUTES"]));
             SymmetricSecurityKey securityKey = new SymmetricSecurityKey(
-                Encoding.UTF8.GetBytes(_configuration["Jwt:Key"])
+                Encoding.UTF8.GetBytes(key)
                 );
             SigningCredentials signingCredentials = new SigningCredentials( securityKey, SecurityAlgorithms.HmacSha256 );
 

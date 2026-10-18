@@ -1,12 +1,2 @@
-﻿@{
-	Layout = "~/Views/Shared/_Layout.cshtml";
-}
-
-<h1>Home</h1>
-@await Component.InvokeAsync("Grid")
-}
-<div class="box">
-	<partial name="_ListPartialView"></partial>
-</div>
-
-<p>Welcome to home page</p>
+@{ ViewData["Title"] = "Learning sample"; }
+<h1>Learning sample</h1><p><a href="/">Visit the home page</a></p>

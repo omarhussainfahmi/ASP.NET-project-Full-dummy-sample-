@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Entities;
 using ServiceContracts1.DTO;
 using ServiceContracts1;
@@ -21,6 +21,7 @@ namespace Services
         public PersonService(IPersonsRepository personsRepository, ILogger<PersonService> logger)
         {
             _personsRepository = personsRepository;
+            _logger = logger;
           
         }
 
@@ -97,7 +98,7 @@ namespace Services
 
 
         }
-        /* Fictional contact records removed. */
+
 
         //_countriesRepository.sp_InsertPerson(person);
     }

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using Entities;
 using ServiceContracts;
@@ -8,7 +8,7 @@ using Services;
 using EntityFrameworkCoreMock;
 using Moq;
 using Microsoft.EntityFrameworkCore;
-using AutoFixture;
+
 
 
 namespace CRUDTests
@@ -16,7 +16,7 @@ namespace CRUDTests
 {
     public class CountriesServiceTest
     {
-        private readonly Fixture _fixture = new Fixture();
+
         private readonly ICountriesService _countriesService;
         #region AddCountry
         #region GetAllCountries
@@ -32,13 +32,14 @@ namespace CRUDTests
         {
             var countriesInitialData = new List<Country>()
             {
-             
+
             };
             var dbContext = new ApplictaionDbContext(new DbContextOptionsBuilder<ApplictaionDbContext>().Options);
 
             _countriesService = new CountriesService(dbContext);
 
         }
+        [Fact]
         public void Add_NULLCountry()
         {
             CountryAddRequset? requset = null;

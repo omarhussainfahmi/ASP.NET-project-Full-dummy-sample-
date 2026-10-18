@@ -1,102 +1,51 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using firstASPnet.models;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
-using Microsoft.AspNetCore.Http.HttpResults;
-using ServiceContracts;
-namespace Services { 
-namespace firstASPnet.controllers
-       
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
+using firstASPnet.Models;
+using System.Xml.Linq;
 
+namespace firstASPnet.Controllers;
+public class HomeController : Controller
 {
-    public class HomeController : Controller
+    [HttpGet("/")] public IActionResult Index() => View();
+    [HttpGet("/company")] public IActionResult About() => View();
+    [HttpGet("/contact")] public IActionResult Contact() => View();
+    [HttpGet("/privacy")] public IActionResult Privacy() => View();
+    [HttpGet("/demo")] public IActionResult Demo() => View(new DemoRequest());
+    [HttpPost("/demo"), EnableRateLimiting("form")]
+    public IActionResult Demo(DemoRequest request)
     {
-          
-
-            //[Controller]
-            public class homeController: Controller
-        {
-                private readonly IConfiguration _configuration;
-
-                private readonly CitiesService citiesService;
-                private readonly IWebHostEnvironment _webHostEnvironment;
-                /*
-                [Route("hello1")]
-                [Route("/")]
-                public IActionResult index1(Person person)
-                {
-                    if (ModelState.IsValid) {
-                        return BadRequest();
-                    }
-               return Content($"{person}");
-                }
-                [Route("hello2")]
-                public ContentResult index2()
-                {
-                    return new ContentResult() {Content= "hello  method2", ContentType = "text/plain" };
-                }
-                [Route("hello3/{mobile:regex(^\\d{{10}}$)}")]
-                public string index3()
-                {
-                    return "hello  method3";
-                }
-              */
-                // [Route("home")]
-                /*public IActionResult Index()
-                {
-                    ViewData["appTitle"] = "Asp.Net Core Demo App";
-                    return View();
-                    //return new ViewResult() { ViewName = "Home" };
-                } 
-                [Route("/")]
-                public IActionResult Index ()
-                { 
-                    return View(); 
-                }
-                [Route("company")]
-                public IActionResult About () 
-                { 
-                    return View();
-                }
-                [Route("contact")]
-                public IActionResult Contact ()
-                { 
-                       return View();
-                } 
-                */
-
-
-                /*public HomeController (IWebHostEnvironment webHostEnvironment) 
-                {
-                 _webHostEnvironment = webHostEnvironment;
-               
-                } */
-
-                [Route("/")]
-            public IActionResult Index()
-            {
-                   // ViewBag.CurrentEnviornment = _webHostEnvironment;
-                ViewData["ListTitle"] = "Cities";
-                ViewData["ListItems"] = new List<string>()
-                {
-                   "London",
-                    "Paris",
-                    "New York"
-                };
-                    ViewBag.CleintID = _configuration["weatherapi:ClientID"];
-                    ViewBag.CleintSecret = _configuration.GetValue("weatherapi:CleintSecret", "the default client secret");
-                    return View();
-            }
-            [Route("company")]
-            public IActionResult About()
-            {
-                return View();
-            }
-            [Route("contact")]
-            public IActionResult Contact()
-            {
-                return View();
-            }
-        }
-}
-}
+        Response.Headers["Cache-Control"] = "no-store";
+        if (!ModelState.IsValid) return View(request);
+        // Validation demonstration only: no database, mail, logging, or personal data storage.
+        return RedirectToAction(nameof(ThankYou));
+    }
+    [HttpGet("/thank-you")] public IActionResult ThankYou() => View();
+    [Route("/error")]
+    public IActionResult Error() { Response.StatusCode = 500; return View("Error"); }
+    [Route("/status/{code:int}")]
+    public IActionResult StatusPage(int code) {
+        Response.StatusCode = code;
+        return View(code == 404 ? "NotFound" : "Error");
+    }
+    [HttpGet("/robots.txt")]
+    public IActionResult Robots([FromServices] IConfiguration config) {
+        var url = PublicUrl(config);
+        return Content(url is null ? "User-agent: *\nDisallow: /\n" :
+            $"User-agent: *\nAllow: /\nDisallow: /demo\nDisallow: /thank-you\nDisallow: /status/\nDisallow: /error\nSitemap: {url}/sitemap.xml\n", "text/plain");
+    }
+    [HttpGet("/sitemap.xml")]
+    public IActionResult Sitemap([FromServices] IConfiguration config) {
+        var url = PublicUrl(config);
+        if (url is null) return NotFound();
+        XNamespace ns = "http://www.sitemaps.org/schemas/sitemap/0.9";
+        return Content(new XDocument(new XElement(ns + "urlset",
+            new[] { "", "/company", "/contact", "/privacy" }.Select(path =>
+                new XElement(ns + "url", new XElement(ns + "loc", url + path)))))
+            .ToString(), "application/xml");
+    }
+    public static string? PublicUrl(IConfiguration config) =>
+        Uri.TryCreate(config["Site:PublicUrl"], UriKind.Absolute, out var uri)
+        && uri.Scheme == "https" && string.IsNullOrEmpty(uri.UserInfo)
+        && uri.AbsolutePath == "/" && string.IsNullOrEmpty(uri.Query) && string.IsNullOrEmpty(uri.Fragment)
+            ? uri.GetLeftPart(UriPartial.Authority) : null;
 }
