@@ -53,7 +53,7 @@ def run(configured):
                 time.sleep(.1)
             else: raise AssertionError('Server did not start')
             links = set()
-            for path in ['/', '/company', '/contact', '/privacy', '/demo', '/thank-you']:
+            for path in ['/', '/company', '/contact', '/privacy', '/terms', '/demo', '/thank-you']:
                 status, headers, body = request(path)
                 assert status == 200, (path,status)
                 html = body.decode()
@@ -63,6 +63,7 @@ def run(configured):
                 assert 'Content-Security-Policy' in headers and headers['X-Content-Type-Options'] == 'nosniff'
                 assert 'ClientSecret' not in html and 'weatherapi' not in html
                 assert ('rel="canonical"' in html) == configured
+                assert html.count('aria-current="page"') == (1 if path in ['/', '/company', '/contact', '/demo'] else 0), path
                 links.update(page.links)
             for link in links:
                 assert request(link)[0] == 200, link
@@ -84,6 +85,8 @@ def run(configured):
             invalid = urlencode({'__RequestVerificationToken':token,'ProjectName':'','RecordCount':'101'})
             status, headers, body = request('/demo','POST',invalid,form_headers)
             assert status == 200 and b'Enter a sample project name.' in body and b'from 1 to 100' in body
+            assert body.count(b'aria-invalid="true"') == 2 and b'tabindex="-1"' in body
+            assert b'validation-focus.js?v=' in body
             assert 'no-store' in headers['Cache-Control']
             attack = urlencode({'__RequestVerificationToken':token,'ProjectName':'<script>alert(1)</script>','RecordCount':'101'})
             _, _, body = request('/demo','POST',attack,form_headers)
@@ -91,6 +94,9 @@ def run(configured):
             valid = urlencode({'__RequestVerificationToken':token,'ProjectName':'Fictional project','RecordCount':'3'})
             status, headers, _ = request('/demo','POST',valid,form_headers)
             assert status == 302 and headers['Location'] == '/thank-you'
+            oversized = urlencode({'__RequestVerificationToken':token,'ProjectName':'A' * 17000,'RecordCount':'1'})
+            # MVC anti-forgery can translate a rejected body read into HTTP 400.
+            assert request('/demo','POST',oversized,form_headers)[0] in (400, 413)
             assert request('/demo','GET',headers={'Accept-Encoding':'gzip'})[1].get('Content-Encoding') is None
             status, headers, body = request('/StyleSheet.css',headers={'Accept-Encoding':'gzip'})
             assert status == 200 and headers.get('Content-Encoding') == 'gzip' and len(gzip.decompress(body)) > 0
@@ -98,11 +104,18 @@ def run(configured):
             sitemap_status, _, sitemap = request('/sitemap.xml')
             if configured:
                 assert 'Sitemap: https://example.test/sitemap.xml' in robots
-                assert sitemap_status == 200 and sitemap.count(b'<loc>') == 4
+                assert sitemap_status == 200 and sitemap.count(b'<loc>') == 5
+                assert b'https://example.test/terms' in sitemap
                 assert b'https://example.test/company' in sitemap
             else:
                 assert 'Disallow: /\n' in robots and sitemap_status == 404
-            assert 429 in [request('/demo','POST',invalid,form_headers)[0] for _ in range(12)]
+            limited = [response for response in [request('/demo','POST',invalid,form_headers) for _ in range(12)] if response[0] == 429]
+            assert limited
+            for _, headers, body in limited:
+                assert 1 <= int(headers['Retry-After']) <= 60
+                assert 'no-store' in headers['Cache-Control']
+                assert b'Please wait before trying again' in body and b'/demo' in body
+                assert b'StackTrace' not in body
             times = []
             for _ in range(10):
                 start=time.perf_counter(); request('/'); times.append((time.perf_counter()-start)*1000)

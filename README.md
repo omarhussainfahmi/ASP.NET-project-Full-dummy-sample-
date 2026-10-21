@@ -23,6 +23,7 @@ Open <https://localhost:7010>. The development profile also listens on HTTP port
 - `/demo` — server-side validation using fictional project details, with native browser validation and anti-forgery protection.
 - `/thank-you` — confirms successful validation. No records are saved and no email is sent.
 - `/privacy` — essential security cookie and hosting-log information.
+- `/terms` — the educational demo's usage limits and source information.
 - Unmatched paths return a custom page with an actual HTTP 404 status.
 - `/robots.txt` and `/sitemap.xml` — deployment-aware crawler configuration.
 
@@ -95,6 +96,14 @@ dotnet list firstASPnet.sln package --vulnerable --include-transitive
 The smoke test requires a local .NET HTTPS development certificate and free ports 17443/17080. It launches and terminates its own server. Certificate verification is disabled **only inside this loopback test client**; production TLS verification is unchanged.
 
 For optional desktop/mobile screenshots, install Playwright in your development tooling and run `node tools/preview.cjs`. It uses installed Edge by default; `BROWSER_CHANNEL=chrome` selects Chrome. `PLAYWRIGHT_MODULE` can point to an existing Playwright module. Screenshots go to ignored `artifacts/`.
+
+## Reel review improvements - 21 October 2026
+
+[Source-by-source notes](docs/REEL-REVIEW.md) explain the ten reel references, review limits and which advice fits this sample. The homepage uses compact, numbered panels; navigation remains visible while scrolling and identifies the active page. Form errors now identify affected inputs and focus their summary using a small local script loaded only on the demo page. A 16 KiB form request limit bounds body processing. Existing 429 responses now have clear retry instructions, no-store and Retry-After; quotas, anti-forgery, HTTPS and CSP remain. Usage terms are linked in the footer and included in the configured sitemap. Unfinished CRUD/authentication/database features remain offline.
+
+The updated suite passed 17 tests. Real HTTPS smoke checks passed in configured and pre-deployment modes, including body limits, retry guidance, errors, links, metadata and security controls. Browser verification covered seven routes at 320, 390, 768 and 1440px (28 combinations), with no page overflow or console errors; the primary homepage action remained visible above the mobile contact button. A whitespace-only name exercised actual server validation and focused the error summary correctly. NuGet reported no known vulnerable dependencies. The full solution rebuild passed with zero errors and 40 pre-existing warnings in unfinished course code; these warnings were not suppressed.
+
+Local review is available at **https://localhost:7010/** while the preview process is running. This machine's already-trusted IIS Express certificate was selected through the preview process environment; no trust-store change or browser warning bypass was needed. This is a local preview only. **No public deployment was created or updated for this sample.** Source changes are intended for GitHub and local review until the owner requests publication.
 
 ## Contact
 

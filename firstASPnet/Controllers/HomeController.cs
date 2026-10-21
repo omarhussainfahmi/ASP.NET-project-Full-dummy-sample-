@@ -10,8 +10,9 @@ public class HomeController : Controller
     [HttpGet("/company")] public IActionResult About() => View();
     [HttpGet("/contact")] public IActionResult Contact() => View();
     [HttpGet("/privacy")] public IActionResult Privacy() => View();
+    [HttpGet("/terms")] public IActionResult Terms() => View();
     [HttpGet("/demo")] public IActionResult Demo() => View(new DemoRequest());
-    [HttpPost("/demo"), EnableRateLimiting("form")]
+    [HttpPost("/demo"), EnableRateLimiting("form"), RequestSizeLimit(16 * 1024)]
     public IActionResult Demo(DemoRequest request)
     {
         Response.Headers["Cache-Control"] = "no-store";
@@ -24,8 +25,9 @@ public class HomeController : Controller
     public IActionResult Error() { Response.StatusCode = 500; return View("Error"); }
     [Route("/status/{code:int}")]
     public IActionResult StatusPage(int code) {
+        if (code < 400 || code > 599) return BadRequest();
         Response.StatusCode = code;
-        return View(code == 404 ? "NotFound" : "Error");
+        return View(code switch { 404 => "NotFound", 429 => "RateLimited", _ => "Error" });
     }
     [HttpGet("/robots.txt")]
     public IActionResult Robots([FromServices] IConfiguration config) {
@@ -39,7 +41,7 @@ public class HomeController : Controller
         if (url is null) return NotFound();
         XNamespace ns = "http://www.sitemaps.org/schemas/sitemap/0.9";
         return Content(new XDocument(new XElement(ns + "urlset",
-            new[] { "", "/company", "/contact", "/privacy" }.Select(path =>
+            new[] { "", "/company", "/contact", "/privacy", "/terms" }.Select(path =>
                 new XElement(ns + "url", new XElement(ns + "loc", url + path)))))
             .ToString(), "application/xml");
     }

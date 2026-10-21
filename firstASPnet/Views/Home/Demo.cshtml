@@ -3,12 +3,13 @@
 <h1>Try form validation</h1>
 <p>Enter fictional project details. This demonstration validates input; it does not save records or send messages. Do not enter personal information.</p>
 <form asp-controller="Home" asp-action="Demo" method="post">
-    <div asp-validation-summary="All" class="validation" role="alert"></div>
+    <div asp-validation-summary="All" class="validation" role="alert" tabindex="-1" aria-label="Check your sample details"></div>
     <label asp-for="ProjectName"></label>
-    <input asp-for="ProjectName" maxlength="80" required aria-describedby="name-error" autocomplete="off" />
+    <input asp-for="ProjectName" maxlength="80" required aria-describedby="name-error" aria-invalid="@(ViewData.ModelState[nameof(DemoRequest.ProjectName)]?.Errors.Count > 0 ? "true" : null)" autocomplete="off" />
     <span asp-validation-for="ProjectName" id="name-error" class="validation"></span>
     <label asp-for="RecordCount"></label>
-    <input asp-for="RecordCount" type="number" min="1" max="100" required aria-describedby="count-error" />
+    <input asp-for="RecordCount" type="number" min="1" max="100" required aria-describedby="count-error" aria-invalid="@(ViewData.ModelState[nameof(DemoRequest.RecordCount)]?.Errors.Count > 0 ? "true" : null)" />
     <span asp-validation-for="RecordCount" id="count-error" class="validation"></span>
     <button type="submit">Validate sample</button>
 </form>
+@section scripts { <script src="~/validation-focus.js" asp-append-version="true" defer></script> }

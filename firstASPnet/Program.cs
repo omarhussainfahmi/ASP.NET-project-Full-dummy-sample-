@@ -26,6 +26,12 @@ builder.Services.AddResponseCompression(options => {
 builder.Services.Configure<BrotliCompressionProviderOptions>(options => options.Level = CompressionLevel.Fastest);
 builder.Services.AddRateLimiter(options => {
     options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
+    options.OnRejected = (context, _) => {
+        context.HttpContext.Response.Headers.CacheControl = "no-store";
+        if (context.Lease.TryGetMetadata(MetadataName.RetryAfter, out var retry))
+            context.HttpContext.Response.Headers.RetryAfter = Math.Max(1, Math.Ceiling(retry.TotalSeconds)).ToString(System.Globalization.CultureInfo.InvariantCulture);
+        return ValueTask.CompletedTask;
+    };
     options.AddPolicy("form", context => RateLimitPartition.GetFixedWindowLimiter(
         context.Connection.RemoteIpAddress?.ToString() ?? "unknown",
         _ => new FixedWindowRateLimiterOptions { PermitLimit = 10, Window = TimeSpan.FromMinutes(1) }));

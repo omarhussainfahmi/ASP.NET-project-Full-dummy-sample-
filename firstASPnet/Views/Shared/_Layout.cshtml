@@ -31,9 +31,9 @@
 </head>
 <body>
     <a class="skip" href="#main">Skip to content</a>
-    <header><nav aria-label="Main navigation"><a class="brand" href="/">firstASPnet</a><a href="/company">About</a><a href="/demo">Try the demo</a><a href="/contact">Contact</a></nav></header>
+    <header><nav aria-label="Main navigation"><a class="brand" href="/" aria-current="@(Context.Request.Path == "/" ? "page" : null)">firstASPnet</a><a href="/company" aria-current="@(Context.Request.Path == "/company" ? "page" : null)">About</a><a href="/demo" aria-current="@(Context.Request.Path == "/demo" ? "page" : null)">Try the demo</a><a href="/contact" aria-current="@(Context.Request.Path == "/contact" ? "page" : null)">Contact</a></nav></header>
     <main id="main" tabindex="-1">@RenderBody()</main>
-    <footer><p>ASP.NET Core MVC learning sample · <a href="/privacy">Privacy &amp; cookies</a></p><p>No advertising or analytics cookies are used.</p></footer>
+    <footer><p>ASP.NET Core MVC learning sample · <a href="/privacy">Privacy &amp; cookies</a> · <a href="/terms">Usage terms</a></p><p>No advertising or analytics cookies are used.</p></footer>
     <a class="mobile-contact" href="/contact">Contact the maintainer</a>
     @await RenderSectionAsync("footer_section", required: false)
     @await RenderSectionAsync("scripts", required: false)
